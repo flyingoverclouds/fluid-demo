@@ -4,13 +4,27 @@
  */
 
 import { SharedMap } from "fluid-framework";
-import { TinyliciousClient } from "@fluidframework/tinylicious-client";
+
+import { InsecureTokenProvider } from "@fluidframework/test-client-utils";
+import { AzureClient } from "@fluidframework/azure-client";
+
+const user = { id: "demo-fluid", name: "DemoFluid" }; // set the value you want
+
+const serviceConfig = {
+    connection: { // All information available in "Access Keys" tabs in your relay's blade in the Azure Portal
+        tenantId: "XXXXXX", // ID du tenant Azure FluidRelay
+        tokenProvider: new InsecureTokenProvider("XXXXXX"/* Primary/2ry key de l'instance du FluidRelay */ , user),
+        endpoint: "https://XXXXXX.fluidrelay.azure.com",  // Endpoint de l'instance du FluidRelay (dépend de la region Azure)
+        type: "remote",
+    }
+};
+
+
+const client = new AzureClient(serviceConfig);
 
 export const diceValueKey = "dice-value-key";
-// Load container and render the app
 
-const client = new TinyliciousClient();
-const containerSchema = {
+const containerSchema = { 
     initialObjects: { diceMap: SharedMap },
 };
 
